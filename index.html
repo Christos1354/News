@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Παγκόσμιος Παλμός — Ειδήσεις & Σύνοψη</title>
 
-  <!-- Εικονίδιο εφαρμογής (Favicon & Mobile Bookmark) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e3a8a'/%3E%3Cstop offset='100%25' stop-color='%230284c7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23ffffff' stroke-width='2.5' opacity='0.9'/%3E%3Cellipse cx='32' cy='32' rx='9' ry='19' fill='none' stroke='%23ffffff' stroke-width='2' opacity='0.85'/%3E%3Cline x1='13' y1='32' x2='51' y2='32' stroke='%23ffffff' stroke-width='2' opacity='0.85'/%3E%3Crect x='26' y='26' width='24' height='20' rx='3' fill='%23f8fafc' stroke='%231e3a8a' stroke-width='2'/%3E%3Cline x1='30' y1='31' x2='46' y2='31' stroke='%230284c7' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='30' y1='36' x2='46' y2='36' stroke='%2364748b' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='30' y1='41' x2='40' y2='41' stroke='%2364748b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
 
   <style>
@@ -254,6 +253,35 @@
     const loadMoreContainer = document.getElementById('loadMoreContainer');
     const loadMoreBtn = document.getElementById('loadMoreBtn');
 
+    // Λίστα RSS feeds ανά χώρα
+    const RSS_SOURCES = {
+      cy: [
+        'https://www.philenews.com/feed/',
+        'https://www.sigmalive.com/rss'
+      ],
+      gr: [
+        'https://www.kathimerini.gr/infeeds/rss/nx-rss-feed.xml',
+        'https://www.naftemporiki.gr/feed/'
+      ],
+      world: [
+        'https://news.google.com/rss?hl=el&gl=GR&ceid=GR:el'
+      ],
+      gb: [
+        'https://feeds.bbci.co.uk/news/uk/rss.xml',
+        'https://www.theguardian.com/uk/rss'
+      ],
+      us: [
+        'https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml',
+        'https://feeds.npr.org/1001/rss.xml'
+      ],
+      de: [
+        'https://www.tagesschau.de/infoservices/alle-meldungen-100~rss2.xml'
+      ],
+      fr: [
+        'https://www.france24.com/fr/rss'
+      ]
+    };
+
     let allArticlesData = [];
     let displayedCount = 0;
     const batchSize = 15;
@@ -272,9 +300,18 @@
       fetchNews();
     }
 
+    function cleanHtml(html) {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html || '';
+      let text = tmp.textContent || tmp.innerText || '';
+      text = text.replace(/\s+/g, ' ').trim();
+      return text.length > 350 ? text.substring(0, 347) + '...' : text;
+    }
+
     async function fetchNews() {
       const country = countrySelect.value;
       const countryName = countrySelect.options[countrySelect.selectedIndex].text;
+      const feeds = RSS_SOURCES[country] || RSS_SOURCES['cy'];
 
       statusMsg.textContent = `Φόρτωση ειδήσεων για: ${countryName}...`;
       newsContainer.innerHTML = '';
@@ -283,20 +320,51 @@
       displayedCount = 0;
 
       try {
-        const res = await fetch(`/api/news?country=${country}`);
-        if (!res.ok) throw new Error();
-        allArticlesData = await res.json();
+        // Ανάκτηση όλων των RSS μέσω του δωρεάν rss2json API
+        const requests = feeds.map(feedUrl => 
+          fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`)
+            .then(r => r.json())
+            .catch(() => null)
+        );
+
+        const results = await Promise.all(requests);
+        const seenTitles = new Set();
+
+        results.forEach(data => {
+          if (data && data.status === 'ok' && Array.isArray(data.items)) {
+            data.items.forEach(item => {
+              const title = (item.title || '').trim();
+              if (title && !seenTitles.has(title.toLowerCase())) {
+                seenTitles.add(title.toLowerCase());
+                
+                // Εύρεση εικόνας από thumbnail, enclosure ή μέσα από το κείμενο
+                let img = item.thumbnail || (item.enclosure && item.enclosure.link) || '';
+                if (!img && item.description) {
+                  const match = item.description.match(/<img[^>]+src=["']([^"']+)["']/i);
+                  if (match) img = match[1];
+                }
+
+                allArticlesData.push({
+                  title: title,
+                  summary: cleanHtml(item.description || item.content),
+                  image: img,
+                  link: item.link
+                });
+              }
+            });
+          }
+        });
 
         if (allArticlesData.length === 0) {
-          statusMsg.textContent = 'Δεν βρέθηκαν διαθέσιμα θέματα αυτή τη στιγμή.';
+          statusMsg.textContent = 'Δεν βρέθηκαν διαθέσιμα θέματα αυτή τη στιγμή. Δοκιμάστε ξανά.';
           return;
         }
 
-        statusMsg.textContent = `Επιλέξτε ένα θέμα για σύνοψη και φωτογραφία (${countryName})`;
+        statusMsg.textContent = `Βρέθηκαν ${allArticlesData.length} θέματα (${countryName}) — Πατήστε σε ένα για σύνοψη`;
         renderBatch();
 
-      } catch {
-        statusMsg.textContent = 'Σφάλμα σύνδεσης. Δοκιμάστε ξανά.';
+      } catch (err) {
+        statusMsg.textContent = 'Σφάλμα σύνδεσης. Ελέγξτε το διαδίκτυο και δοκιμάστε ξανά.';
       }
     }
 
