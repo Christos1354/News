@@ -18,10 +18,11 @@
       --bg: #f8fafc;
       --card: #ffffff;
       --text: #0f172a;
+      --summary-text: #1e293b;
       --muted: #475569;
       --primary: #1e3a8a;
       --accent: #0284c7;
-      --border: #e2e8f0;
+      --border: #cbd5e1;
       --hover: #f1f5f9;
       --star: #f59e0b;
     }
@@ -32,31 +33,33 @@
       color: var(--text);
       max-width: 780px;
       margin: 0 auto;
-      padding: 1.5rem 1rem 4rem;
-      line-height: 1.6;
+      padding: 1.5rem 1rem 4.5rem;
+      line-height: 1.65;
+      font-size: 17px; /* Μεγαλύτερη βασική γραμματοσειρά */
     }
     header {
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.4rem;
     }
     .app-logo {
-      width: 68px;
-      height: 68px;
-      margin-bottom: 8px;
+      width: 70px;
+      height: 70px;
+      margin-bottom: 10px;
       filter: drop-shadow(0 4px 10px rgba(2, 132, 199, 0.25));
     }
     h1 {
       margin: 0;
-      font-size: 1.65rem;
+      font-size: 1.85rem;
       color: var(--primary);
+      letter-spacing: -0.01em;
     }
     .subtitle {
       color: var(--muted);
-      margin: 4px 0 0;
-      font-size: 0.95rem;
+      margin: 6px 0 0;
+      font-size: 1.05rem;
     }
     
     .top-bar {
@@ -64,11 +67,11 @@
       justify-content: space-between;
       align-items: center;
       background: var(--card);
-      padding: 10px 16px;
-      border-radius: 12px;
+      padding: 12px 16px;
+      border-radius: 14px;
       border: 1px solid var(--border);
-      margin-bottom: 1rem;
-      gap: 10px;
+      margin-bottom: 1.2rem;
+      gap: 12px;
       flex-wrap: wrap;
     }
     .controls {
@@ -78,25 +81,26 @@
       flex: 1;
     }
     select {
-      font-size: 0.95rem;
-      padding: 8px 12px;
-      border-radius: 8px;
+      font-size: 1.08rem;
+      font-weight: 500;
+      padding: 10px 14px;
+      border-radius: 10px;
       background: #f8fafc;
       border: 1px solid var(--border);
       color: var(--text);
       flex: 1;
-      min-width: 200px;
+      min-width: 210px;
       cursor: pointer;
     }
     
     /* Google Translate Styling */
     #google_translate_element { display: inline-block; }
     .goog-te-combo {
-      padding: 6px;
-      border-radius: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
       border: 1px solid var(--border);
       background: #f8fafc;
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
     .goog-logo-link, .gsk-kiwi, .goog-te-gadget span { display: none !important; }
     body { top: 0 !important; }
@@ -104,8 +108,9 @@
     .status {
       text-align: center;
       color: var(--muted);
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+      font-weight: 500;
     }
 
     /* Κάρτες Ειδήσεων */
@@ -114,18 +119,18 @@
       border: 1px solid var(--border);
       border-left: 6px solid var(--accent);
       border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
       cursor: pointer;
       transition: all 0.2s ease;
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.03);
     }
     .news-item:hover {
       background: var(--hover);
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
     }
     .news-item.open {
       background: #ffffff;
-      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.08);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.1);
     }
 
     .news-item.cat-sport { border-left-color: #10b981; }
@@ -140,42 +145,44 @@
       gap: 14px;
     }
 
-    /* ΠΟΛΥ ΜΕΓΑΛΟ και καθαρό εικονίδιο ειδησης σε πλαίσιο */
+    /* Μεγάλο και καθαρό εικονίδιο είδησης σε πλαίσιο */
     .news-badge-box {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
       background: #f1f5f9;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.65rem;
+      font-size: 1.75rem;
     }
 
     .news-meta-info {
       flex: 1;
     }
     .news-category-tag {
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       color: var(--muted);
-      margin-bottom: 3px;
+      margin-bottom: 5px;
       display: block;
     }
     .news-title {
       font-weight: 600;
-      font-size: 1.05rem;
+      font-size: 1.2rem; /* Μεγαλύτερα και πιο ευανάγνωστα γράμματα τίτλου */
+      line-height: 1.45;
       color: var(--text);
+      display: block;
     }
     
     /* Κουμπί Αγαπημένων (Αστέρι) */
     .fav-btn {
       background: none;
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.65rem;
       cursor: pointer;
       color: #cbd5e1;
       padding: 6px;
@@ -192,7 +199,7 @@
 
     .chevron {
       color: var(--muted);
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       transition: transform 0.2s;
       padding-left: 4px;
     }
@@ -202,9 +209,9 @@
     }
     .news-details {
       display: none;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid #e2e8f0;
       cursor: default;
     }
     .news-item.open .news-details {
@@ -212,51 +219,53 @@
     }
     .news-details img {
       width: 100%;
-      max-height: 320px;
+      max-height: 340px;
       object-fit: cover;
       border-radius: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .news-summary {
-      color: var(--muted);
-      margin: 0 0 16px;
-      font-size: 0.98rem;
+      color: var(--summary-text);
+      margin: 0 0 18px;
+      font-size: 1.1rem; /* Μεγαλύτερα γράμματα σύνοψης */
+      line-height: 1.75; /* Άνετο διάστιχο για ξεκούραστο διάβασμα */
     }
     .details-actions {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
     }
     .read-more {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #f0f9ff;
+      background: #e0f2fe;
       color: var(--primary);
-      padding: 9px 16px;
-      border-radius: 9px;
+      padding: 11px 18px;
+      border-radius: 10px;
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.92rem;
+      font-size: 1.02rem;
       transition: background 0.2s;
     }
-    .read-more:hover { background: #e0f2fe; }
+    .read-more:hover { background: #bae6fd; }
 
     .load-more-container {
       text-align: center;
-      margin-top: 1.8rem;
+      margin-top: 2rem;
       display: none;
     }
     .btn-load {
       background: white;
       color: var(--primary);
-      border: 1px solid var(--accent);
-      padding: 10px 24px;
+      border: 2px solid var(--accent);
+      padding: 12px 28px;
+      font-size: 1.08rem;
       font-weight: 600;
       cursor: pointer;
-      border-radius: 10px;
+      border-radius: 12px;
       transition: background 0.2s, color 0.2s;
     }
     .btn-load:hover {
@@ -428,7 +437,7 @@
       tmp.innerHTML = html || '';
       let text = tmp.textContent || tmp.innerText || '';
       text = text.replace(/\s+/g, ' ').trim();
-      return text.length > 350 ? text.substring(0, 347) + '...' : text;
+      return text.length > 380 ? text.substring(0, 377) + '...' : text;
     }
 
     async function fetchNews() {
